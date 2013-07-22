@@ -11,7 +11,9 @@
 			Turn time remaining: <span class="trn-timer-end-{{backgroundClass()}}">{{turnTimeRemaining}}</span>
 		</div>
 		<div ng-controller="playersController">
-			<table>
+			<table border="1">
+			    <tr><td>
+				<table>
 				<tr ng-repeat="player in players">
 					<td>
 						{{player.name}}
@@ -19,6 +21,26 @@
 					<td ng-repeat="cardId in player.cardIds">
 						<div class="crd-{{cardState(player, cardId)}}" ng-click="select(player, cardId)">{{cardById(cardId).name}}</div>
 					</td>
+					<td>
+						{{player.text}}
+					</td>
+				</tr>
+				</table>
+				<td>
+				<table>
+				<tr ng-repeat="nonplayer in nonplayers">
+					<td>
+						{{nonplayer.name}}
+					</td>
+					<td ng-repeat="cardId in nonplayer.cardIds">
+						<div class="crd-{{cardState(nonplayer, cardId)}}">{{cardById(cardId).name}}</div>
+					</td>
+					<td>
+						{{nonplayer.text}}
+					</td>							
+				</tr>
+				</table>
+				</td>
 				</tr>
 			</table>
 		</div>

@@ -11,11 +11,15 @@ var io = ioModule.listen(http, { log: false })
 var cards = require('./cards')
 
 var players = require('./players')
+var nonplayers = require('./nonplayers')
 
 var onConnect = function(socket) {
 	socket.on( 'select-card', onSelectCard )
 
 	socket.emit( 'cards', cards.list )
+
+	socket.emit( 'nonplayers', nonplayers.list )
+
 	socket.emit( 'players', players.list )
 	socket.emit( 'turn-pulse', turnTimer )
 }
@@ -24,7 +28,9 @@ var sockets = require('./sockets')( io, onConnect )
 
 var onSelectCard = function(data) {
 	var player = players.findById( data.playerId )
+
 	player.selectedCard = data.cardId
+
 	sockets.broadcast( 'player-state', player )
 }
 
@@ -33,6 +39,17 @@ var oneSecond = function(turnTimer) {
 }
 
 var endTurn = function() {
+
+	nonplayers.selectCards()
+	_.each(nonplayers.list, function(nonplayer) {
+		sockets.broadcast( 'nonplayer-state', nonplayer )
+		var card = cards.findById(nonplayer.selectedCard)
+		if (card) {
+			card.apply(nonplayers, nonplayer)
+		}		
+	})
+	nonplayers.unselectCards()
+
 	_.each( players.list, function(player) {
 		var card = cards.findById(player.selectedCard)
 		if (card) {
@@ -40,6 +57,7 @@ var endTurn = function() {
 		}
 	})
 	players.unselectCards()
+	sockets.broadcast( 'nonplayers', nonplayers.list )
 	sockets.broadcast( 'players', players.list )
 }
 
