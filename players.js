@@ -4,11 +4,11 @@ var player = require('./player')
 
 var Players = function() {
 	this.list = [
-		new player.NonPlayer( 'Rocky', 4 ),
-		new player.Player( 'Carl', 3 ),
-		new player.Player( 'Noel', 2 ),
-		new player.Player( 'Sean', 1 ),
-		new player.Player( 'Mike', 0 )
+		new player.Player( 'Rocky', 4, "antagonists", [ { cardId: 5, weight: 1 } ] ),
+		new player.Player( 'Carl', 3, "protagonists", [ { cardId: 5, weight: 0.2}, { cardId: 6, weight: 0.2}, { cardId: 7, weight: 0.2}, { cardId: 1, weight: 0.2}, { cardId: 2, weight: 0.2}] ),
+		new player.Player( 'Noel', 2, "protagonists", [ { cardId: 5, weight: 0.2}, { cardId: 6, weight: 0.2}, { cardId: 7, weight: 0.2}, { cardId: 1, weight: 0.2}, { cardId: 2, weight: 0.2}] ),
+		new player.Player( 'Sean', 1, "protagonists", [ { cardId: 5, weight: 0.2}, { cardId: 6, weight: 0.2}, { cardId: 7, weight: 0.2}, { cardId: 1, weight: 0.2}, { cardId: 2, weight: 0.2}] ),
+		new player.Player( 'Mike', 0, "protagonists", [ { cardId: 5, weight: 0.2}, { cardId: 6, weight: 0.2}, { cardId: 7, weight: 0.2}, { cardId: 1, weight: 0.2}, { cardId: 2, weight: 0.2}] )
 	]
 	
 	this.findById = function( id ) {

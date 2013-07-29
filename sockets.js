@@ -1,6 +1,6 @@
 var _ = require('underscore')
 
-module.exports = function(io, connectionCallback) {
+module.exports = function(io, connectionCallback, disconnectionCallback) {
 	var sockets = []
 
 	var socketObj = {
@@ -13,6 +13,7 @@ module.exports = function(io, connectionCallback) {
 	
 	var onDisconnect = function(socket) {
 		sockets.splice( sockets.indexOf(socket), 1 )
+		disconnectionCallback(socket)
 	}
 
 	io.sockets.on( 'connection', function(socket) {

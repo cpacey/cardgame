@@ -26,12 +26,6 @@ function playersController($scope) {
 		})
 		$scope.$apply()
 	})
-	
-	socket.on('nonplayers', function(data) {
-		console.log( 'nonplayers' )
-		$scope.nonplayers = data
-		$scope.$apply()
-	})	
 
 	socket.on( 'player-state', function(data) {
 		console.log( 'player-state' )
@@ -41,26 +35,36 @@ function playersController($scope) {
 		}
 		$scope.$apply()
 	})
-
-	socket.on( 'nonplayer-state', function(data) {
-		console.log( 'nonplayer-state' )
-		var nonplayer = _.find( $scope.nonplayers, function(nonplayer) { return nonplayer.id == data.id } )
-		for( var item in data ) {
-			nonplayer[item] = data[item]
+	
+	socket.on( 'controllers' , function(data) {
+		console.log( 'controllers' )
+		if($scope.controller.id == null) {
+			$scope.controller.id = data.list[data.list.length-1]
 		}
 		$scope.$apply()
 	})
 	
 	$scope.players = []
-	$scope.nonplayers = []
+	$scope.controller = {id:null}
 
 	$scope.select = function(player, cardId) {
-		var message = { playerId: player.id, cardId: cardId }
-		socket.emit('select-card', message )
+		if (player.controllerId == $scope.controller.id) {
+			socket.emit('select-card', { playerId: player.id, cardId: cardId } )
+		}
+	}
+	
+	$scope.control = function(player) {
+		if(player.controllerId == null) {
+			socket.emit('control-player', { playerId: player.id, controllerId: $scope.controller.id })
+		}
 	}
 	
 	$scope.cardState = function(player, cardId) {
-		return cardId == player.selectedCard ? 'selected' : 'selectable'
+		return player.controllerId != $scope.controller.id ? 'unselectable' : cardId == player.selectedCard ? 'selected' : 'selectable'
+	}
+	
+	$scope.controlState = function(player) {
+		return player.controllerId == null ? 'selectable' : 'unselectable'
 	}
 	
 	$scope.cardById = function(cardId) {
@@ -68,6 +72,14 @@ function playersController($scope) {
 	}
 	
 	$scope.urlFor = function(player) {
-		return player.entityType + ".html"
+		return player.team + ".html"
+	}
+	
+	$scope.controllerConnect = function() {
+		socket.emit('controller-connect')
+	}
+	
+	$scope.$routeChangeStart = function (event, next, current) {
+		socket.emit('controller-disconnect', {controllerId: $scope.controller.id} )
 	}
 }

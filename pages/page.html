@@ -11,12 +11,14 @@
 			Turn time remaining: <span class="trn-timer-end-{{backgroundClass()}}">{{turnTimeRemaining}}</span>
 		</div>
 		<div ng-controller="playersController">
+			<div>
+				Control Id: {{controller.id}}
+			</div>
 			<div ng-repeat="player in players">
 				<div class="player-each">
 					<hr class="player-each" />
 					<ng-include src="urlFor(player)"></ng-include>
 				</div>
-				
 			</div>
 		</div>
 	</body>

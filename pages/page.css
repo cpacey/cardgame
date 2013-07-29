@@ -19,11 +19,19 @@
 	float: left;
 }
 
+.crd-unselectable {
+	border-style:double;
+	border-width:5px;
+	padding:5px;
+	background-color:grey;
+	float: left;
+}
+
 .crd-nonplayer {
 	border-style:double;
 	border-width:5px;
 	padding:5px;
-	background-color:gray;
+	background-color:orange;
 	float: left;
 }
 
