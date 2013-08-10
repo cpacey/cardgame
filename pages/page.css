@@ -8,7 +8,7 @@
 	border-width:5px;
 	padding:5px;
 	background-color:yellow;
-	float: left;
+	float: right;
 }
 
 .crd-selected {
@@ -16,7 +16,7 @@
 	border-width:5px;
 	padding:5px;
 	background-color:red;
-	float: left;
+	float: right;
 }
 
 .crd-unselectable {
@@ -24,7 +24,7 @@
 	border-width:5px;
 	padding:5px;
 	background-color:grey;
-	float: left;
+	float: right;
 }
 
 .crd-nonplayer {
@@ -32,7 +32,7 @@
 	border-width:5px;
 	padding:5px;
 	background-color:orange;
-	float: left;
+	float: right;
 }
 
 .trn-timer-end-near {
@@ -43,18 +43,33 @@
 .trn-timer-end-far {
 }
 
-.player-text {
+.character-text {
 	float: left;
-	clear: right;
+	width: 200px;
 }
 
-.player-each{
+.character-each{
 	clear: left;
 }
 
-.player-name {
+.character-stats {
 	float: left;
 	width: 100px;
 	vertical-align: middle;
 	text-align: center;
+}
+
+.character-cards {
+	float: right;
+}
+
+.player-board {
+	width: 100%;
+	padding:5px;
+	float: left;
+}
+
+.player-hand {
+	padding:5px;
+	float: left;
 }

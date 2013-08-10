@@ -1,9 +1,11 @@
-<div class="player-name">
-	{{player.name}}
+<div class="character-stats">
+	&nbsp;
 </div>
-<div class="player-text" ng-repeat="cardId in player.cardIds">
-	<div class="crd-nonplayer">{{cardById(cardId).name}}</div>
+<div class="character-stats">
+	{{character.name}}
+	</br>
+	{{character.statistics.health}}
 </div>
-<div class="player-text">
-	{{player.text}}
+<div class="character-text">
+	{{character.text}}
 </div>

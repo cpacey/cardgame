@@ -1,12 +1,11 @@
-<div class="player-name">
-	{{player.name}}
-	</br>
-	Controller: {{player.controllerId}}
+<div class="character-stats">
+	<div class="crd-{{controlState(character)}}" ng-click="control(character)">Control</div>
 </div>
-<div class="player-text" ng-repeat="cardId in player.cardIds">
-	<div class="crd-{{cardState(player, cardId)}}" ng-click="select(player, cardId)">{{cardById(cardId).name}}</div>
+<div class="character-stats">
+	{{character.name}}
+	<br>
+	{{character.statistics.health}}
 </div>
-<div class="crd-{{controlState(player)}}" ng-click="control(player)">Control</div>
-<div class="player-text">
-	{{player.text}}
+<div class="character-text">
+	{{character.text}}
 </div>

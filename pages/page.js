@@ -11,7 +11,7 @@ function turnTimerController($scope) {
 	}
 }
 
-function playersController($scope) {
+function charactersController($scope) {
 	var cards = []
 
 	socket.on('cards', function(data) {
@@ -19,67 +19,67 @@ function playersController($scope) {
 		cards = data
 	})
 
-	socket.on('players', function(data) {
-		console.log( 'players' )
-		$scope.players = _.sortBy( data, function(player) {
-			return player.position
+	socket.on('characters', function(data) {
+		console.log( 'characters' )
+		$scope.characters = _.sortBy( data, function(character) {
+			return character.position
 		})
 		$scope.$apply()
 	})
 
-	socket.on( 'player-state', function(data) {
-		console.log( 'player-state' )
-		var player = _.find( $scope.players, function(player) { return player.id == data.id } )
+	socket.on( 'character-state', function(data) {
+		console.log( 'character-state' )
+		var character = _.find( $scope.characters, function(character) { return character.id == data.id } )
 		for( var item in data ) {
-			player[item] = data[item]
+			character[item] = data[item]
 		}
 		$scope.$apply()
 	})
 	
-	socket.on( 'controllers' , function(data) {
-		console.log( 'controllers' )
-		if($scope.controller.id == null) {
-			$scope.controller.id = data.list[data.list.length-1]
+	socket.on( 'players' , function(data) {
+		console.log( 'players' )
+		if($scope.player.id == null) {
+			$scope.player.id = data.list[data.list.length-1]
 		}
 		$scope.$apply()
 	})
 	
-	$scope.players = []
-	$scope.controller = {id:null}
+	$scope.characters = []
+	$scope.player = {id:null}
 
-	$scope.select = function(player, cardId) {
-		if (player.controllerId == $scope.controller.id) {
-			socket.emit('select-card', { playerId: player.id, cardId: cardId } )
+	$scope.select = function(character, cardId) {
+		if (character.playerId == $scope.player.id) {
+			socket.emit('select-card', { characterId: character.id, cardId: cardId } )
 		}
 	}
 	
-	$scope.control = function(player) {
-		if(player.controllerId == null) {
-			socket.emit('control-player', { playerId: player.id, controllerId: $scope.controller.id })
+	$scope.control = function(character) {
+		if(character.playerId == null) {
+			socket.emit('select-character', { characterId: character.id, playerId: $scope.player.id })
 		}
 	}
 	
-	$scope.cardState = function(player, cardId) {
-		return player.controllerId != $scope.controller.id ? 'unselectable' : cardId == player.selectedCard ? 'selected' : 'selectable'
+	$scope.cardState = function(character, cardId) {
+		return character.playerId != $scope.player.id ? 'unselectable' : cardId == character.selectedCard ? 'selected' : 'selectable'
 	}
 	
-	$scope.controlState = function(player) {
-		return player.controllerId == null ? 'selectable' : 'unselectable'
+	$scope.controlState = function(character) {
+		return character.playerId == null ? 'selectable' : 'unselectable'
 	}
 	
 	$scope.cardById = function(cardId) {
 		return _.findWhere( cards, { id: cardId } )
 	}
 	
-	$scope.urlFor = function(player) {
-		return player.team + ".html"
+	$scope.urlFor = function(character) {
+		return character.team + ".html"
 	}
 	
-	$scope.controllerConnect = function() {
-		socket.emit('controller-connect')
+	$scope.playerConnect = function() {
+		socket.emit('player-connect')
 	}
 	
 	$scope.$routeChangeStart = function (event, next, current) {
-		socket.emit('controller-disconnect', {controllerId: $scope.controller.id} )
+		socket.emit('player-disconnect', {playerId: $scope.player.id} )
 	}
 }

@@ -10,49 +10,49 @@ var io = ioModule.listen(http, { log: false })
 
 var cards = require('./cards')
 
-var players = require('./players')
+var board = require('./board')
 
-var controllers = {list: []}
+var players = {list: []}
 
 var onConnect = function(socket) {
 	socket.on( 'select-card', onSelectCard )
-	socket.on( 'control-player', onControlPlayer )
+	socket.on( 'select-character', onSelectCharacter )
 
 	socket.emit( 'cards', cards.list )
 
-	socket.emit( 'players', players.list )
+	socket.emit( 'characters', board.characters )
 	socket.emit( 'turn-pulse', turnTimer )
 
-	controllers.list.push(socket.id)
-	socket.emit( 'controllers', controllers )	
+	players.list.push(socket.id)
+	socket.emit( 'players', players )	
 }
 
 var onDisconnect = function(socket) {
-	_.each( players.list, function(player) {
-		player.releaseBotControl(socket.id)
-		sockets.broadcast('player-state', player)		
+	_.each( board.characters, function(character) {
+		character.releaseBotControl(socket.id)
+		sockets.broadcast('character-state', character)		
 	})
-	controllers.list.splice(controllers.list.indexOf(socket.id), 1)
+	players.list.splice(players.list.indexOf(socket.id), 1)
 }
 
 var sockets = require('./sockets')( io, onConnect, onDisconnect )
 
 var onSelectCard = function(data) {
-	var player = players.findById( data.playerId )
+	var character = board.findById( data.characterId )
 
-	player.selectCard( data.cardId )
+	character.selectCard( data.cardId )
 
-	sockets.broadcast( 'player-state', player )
+	sockets.broadcast( 'character-state', character )
 }
 
-var onControlPlayer = function(data) {
-	_.each( players.list, function(player) {
-		if (player.id == data.playerId) {
-			player.takeBotControl(data.controllerId)
+var onSelectCharacter = function(data) {
+	_.each( board.characters, function(character) {
+		if (character.id == data.characterId) {
+			character.takeBotControl(data.playerId)
 		} else {
-			player.releaseBotControl(data.controllerId)
+			character.releaseBotControl(data.playerId)
 		}
-		sockets.broadcast( 'player-state', player )
+		sockets.broadcast( 'character-state', character )
 	})
 }
 
@@ -61,14 +61,13 @@ var oneSecond = function(turnTimer) {
 }
 
 var endTurn = function() {
-	_.each( players.list, function(player) {
-		var card = cards.findById(player.getSelectedCard())
-		if (card) {
-			card.apply(players, player)
+	_.each(_.sortBy( board.characters, function(character) { return cards.findById(character.getSelectedCard()).priority }), 
+		function(character) {
+			cards.findById(character.getSelectedCard()).apply(board, character)
 		}
-	})
-	players.unselectCards()
-	sockets.broadcast( 'players', players.list )
+	)
+	board.unselectCards()
+	sockets.broadcast( 'characters', board.characters )
 }
 
 var turnTimer = require('./turnTimer')( oneSecond, endTurn )

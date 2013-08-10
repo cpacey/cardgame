@@ -10,14 +10,27 @@
 		<div ng-controller="turnTimerController">
 			Turn time remaining: <span class="trn-timer-end-{{backgroundClass()}}">{{turnTimeRemaining}}</span>
 		</div>
-		<div ng-controller="playersController">
-			<div>
-				Control Id: {{controller.id}}
+
+		<div ng-controller="charactersController">
+			<div class="player-board">
+				<div ng-repeat="character in characters">
+					<div class="character-each">
+						<hr class="character-each" />
+						<ng-include src="urlFor(character)"></ng-include>
+					</div>
+				</div>
 			</div>
-			<div ng-repeat="player in players">
-				<div class="player-each">
-					<hr class="player-each" />
-					<ng-include src="urlFor(player)"></ng-include>
+		</div>
+
+		<div ng-controller="charactersController">
+			<div class="player-hand">
+				<div ng-repeat="character in characters">	
+					<div ng-show="player.id==character.playerId"> 			
+						<div class="character-stats">{{character.name}}</div>
+						<div class="character-cards" ng-repeat="cardId in character.cardIds">
+							<div class="crd-{{cardState(character, cardId)}}" ng-click="select(character, cardId)">{{cardById(cardId).name}}</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
